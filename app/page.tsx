@@ -1,5 +1,6 @@
 import { auth, EnrichedSession } from 'auth';
 import { FetchCalendarEvents } from '@/components/calendar-component';
+import YouTubeComments from '@/components/YouTubeComments';
 
 export default async function Index() {
   const session = (await auth()) as EnrichedSession;
@@ -26,6 +27,7 @@ export default async function Index() {
           )}
         </pre>
         <FetchCalendarEvents />
+        <YouTubeComments />
       </div>
     </div>
   );

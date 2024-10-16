@@ -17,7 +17,8 @@ export const config = {
             'openid',
             'https://www.googleapis.com/auth/userinfo.email',
             'https://www.googleapis.com/auth/userinfo.profile',
-            'https://www.googleapis.com/auth/calendar',
+            'https://www.googleapis.com/auth/youtube',
+            'https://www.googleapis.com/auth/youtube.force-ssl'
             // and more scope urls
           ].join(' '),
           response: 'code',
@@ -101,3 +102,4 @@ export interface EnrichedSession extends Session {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
+
