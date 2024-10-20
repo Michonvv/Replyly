@@ -76,45 +76,54 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-    const session = (await auth()) as EnrichedSession;
+  const session = (await auth()) as EnrichedSession;
   
-    if (!session) {
-      return new Response('Unauthorized', { status: 401 });
-    }
+  if (!session) {
+    return new Response('Unauthorized', { status: 401 });
+  }
   
-    const clientId = process.env.AUTH_GOOGLE_ID;
-    const clientSecret = process.env.AUTH_GOOGLE_SECRET;
-    const accessToken = session?.accessToken;
-    const refreshToken = session?.refreshToken;
+  const clientId = process.env.AUTH_GOOGLE_ID;
+  const clientSecret = process.env.AUTH_GOOGLE_SECRET;
+  const accessToken = session?.accessToken;
+  const refreshToken = session?.refreshToken;
   
-    const oauth2Client = new OAuth2Client({ clientId, clientSecret });
-    oauth2Client.setCredentials({
-      access_token: accessToken,
-      refresh_token: refreshToken,
+  const oauth2Client = new OAuth2Client({ clientId, clientSecret });
+  oauth2Client.setCredentials({
+    access_token: accessToken,
+    refresh_token: refreshToken,
+  });
+  
+  const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
+  
+  const { parentId, text } = await request.json();
+  
+  if (!parentId || !text) {
+    return new Response('Parent comment ID and reply text are required', { status: 400 });
+  }
+  
+  try {
+    const response = await youtube.comments.insert({
+      part: ['snippet'],
+      requestBody: {
+        snippet: {
+          parentId: parentId,
+          textOriginal: text,
+        },
+      },
     });
   
-    const youtube = google.youtube({ version: 'v3', auth: oauth2Client });
+    // Format the reply to match the Comment interface
+    const formattedReply = {
+      id: response.data.id,
+      text: response.data.snippet?.textOriginal,
+      author: response.data.snippet?.authorDisplayName,
+      publishedAt: response.data.snippet?.publishedAt,
+      likeCount: response.data.snippet?.likeCount,
+    };
   
-    const { parentId, text } = await request.json();
-  
-    if (!parentId || !text) {
-      return new Response('Parent comment ID and reply text are required', { status: 400 });
-    }
-  
-    try {
-      const response = await youtube.comments.insert({
-        part: ['snippet'],
-        requestBody: {
-          snippet: {
-            parentId: parentId,
-            textOriginal: text,
-          },
-        },
-      });
-  
-      return Response.json({ reply: response.data });
-    } catch (error) {
-      console.error('Error posting reply:', error);
-      return new Response('Error posting reply', { status: 500 });
-    }
+    return Response.json({ reply: formattedReply });
+  } catch (error) {
+    console.error('Error posting reply:', error);
+    return new Response('Error posting reply', { status: 500 });
   }
+}
