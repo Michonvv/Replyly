@@ -1,11 +1,12 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
+import { SupabaseAdapter } from "@auth/supabase-adapter"
 
 import type { NextAuthConfig, Session } from 'next-auth';
 
 export const config = {
   theme: {
-    logo: 'https://next-auth.js.org/img/logo/logo-sm.png',
+    logo: 'https://i.ibb.co/KFdzmZR/Frame-1.png',
   },
   providers: [
     Google({
@@ -26,6 +27,7 @@ export const config = {
       },
     }),
   ],
+
   basePath: '/api/auth',
   callbacks: {
     authorized({ request, auth }) {
