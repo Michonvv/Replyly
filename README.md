@@ -112,4 +112,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 Made with ❤️ by Michon
 
-[Get Started](https://github.com/Michonvv/Replyly) | [View Docs](https://your-docs-url.com)
+[Get Started](https://github.com/Michonvv/Replyly) 
