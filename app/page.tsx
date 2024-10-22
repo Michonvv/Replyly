@@ -1,5 +1,6 @@
 import { auth, EnrichedSession } from 'auth';
 import Dashboard from '@/components/Dashboard';
+import Homepage from '@/components/homepage';
 
 export default async function Index() {
   const session = (await auth()) as EnrichedSession;
@@ -9,7 +10,7 @@ export default async function Index() {
       {session ? (
         <Dashboard />
       ) : (
-        <p className="p-4">Please sign in to view your channel videos and manage comments.</p>
+        <Homepage />
       )}
     </div>
   );

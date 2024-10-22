@@ -3,11 +3,20 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Settings } from "lucide-react";
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Sidebar({ videos, onVideoSelect }) {
   return (
     <aside className="w-64 bg-white dark:bg-gray-800 p-4 flex flex-col">
-      <h1 className="text-2xl font-bold mb-6">YT Assistant</h1>
+      <Image
+            src="/logo.png"
+            alt="Home"
+            className="h-auto w-32 m-3"
+            width={0}
+            height={0}
+            sizes="100vw"
+          />
       <Tabs defaultValue="videos" className="flex-1">
         <TabsList className="grid w-full grid-cols-2 mb-4">
           <TabsTrigger value="videos">Videos</TabsTrigger>
@@ -32,10 +41,12 @@ export default function Sidebar({ videos, onVideoSelect }) {
         </TabsContent>
       </Tabs>
       <Separator className="my-4" />
-      <Button variant="outline" className="w-full">
-        <Settings className="w-4 h-4 mr-2" />
-        Settings
-      </Button>
+      <Link href="/settings" passHref>
+        <Button variant="outline" className="w-full">
+          <Settings className="w-4 h-4 mr-2" />
+          Settings
+        </Button>
+      </Link>
     </aside>
   );
 }

@@ -2,47 +2,54 @@
 import { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
 import MainContent from "./MainContent";
+import SettingsPopup from '@/components/SettingsPopup';
+import React from 'react';
 
 export default function Dashboard() {
-  const [videos, setVideos] = useState([]);
-  const [selectedVideo, setSelectedVideo] = useState(null);
-  const [comments, setComments] = useState([]);
+    const [isSettingsOpen, setIsSettingsOpen] = React.useState(false);
 
-  useEffect(() => {
-    fetchVideos();
-  }, []);
+    const [videos, setVideos] = useState([]);
+    const [selectedVideo, setSelectedVideo] = useState(null);
+    const [comments, setComments] = useState([]);
 
-  const fetchVideos = async () => {
-    try {
-      const response = await fetch('/api/videos');
-      if (!response.ok) {
-        throw new Error('Failed to fetch videos');
-      }
-      const data = await response.json();
-      setVideos(data.videos);
-    } catch (error) {
-      console.error('Error fetching videos:', error);
-    }
-  };
+    useEffect(() => {
+        fetchVideos();
+    }, []);
 
-  const handleVideoSelect = async (video) => {
-    setSelectedVideo(video);
-    try {
-      const response = await fetch(`/api/comments?videoId=${video.id}`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch comments');
-      }
-      const data = await response.json();
-      setComments(data.comments);
-    } catch (error) {
-      console.error('Error fetching comments:', error);
-    }
-  };
+    const fetchVideos = async () => {
+        try {
+            const response = await fetch('/api/videos');
+            if (!response.ok) {
+                throw new Error('Failed to fetch videos');
+            }
+            const data = await response.json();
+            setVideos(data.videos);
+        } catch (error) {
+            console.error('Error fetching videos:', error);
+        }
+    };
 
-  return (
-    <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
-      <Sidebar videos={videos} onVideoSelect={handleVideoSelect} />
-      <MainContent selectedVideo={selectedVideo} comments={comments} />
-    </div>
-  );
+    const handleVideoSelect = async (video) => {
+        setSelectedVideo(video);
+        try {
+            const response = await fetch(`/api/comments?videoId=${video.id}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch comments');
+            }
+            const data = await response.json();
+            setComments(data.comments);
+        } catch (error) {
+            console.error('Error fetching comments:', error);
+        }
+    };
+    {isSettingsOpen && (
+        <SettingsPopup onClose={() => setIsSettingsOpen(false)} />
+      )}
+    return (
+        <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
+            <Sidebar videos={videos} onVideoSelect={handleVideoSelect} />
+            <MainContent selectedVideo={selectedVideo} comments={comments} />
+        </div>
+        
+    );
 }
